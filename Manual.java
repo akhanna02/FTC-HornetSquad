@@ -1,79 +1,55 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
-    // naming Parts
 public class Manual  extends LinearOpMode{
-    private Blinker control_Hub;
-    private IMU imu;
-    // naming motors
-    private DcMotor RFMotor;
-    private DcMotor RBMotor;
-    private DcMotor LFMotor;
-    private DcMotor LBMotor;
-
-    // todo: write your code here
+    
+    private RobotHardware robot = new RobotHardware(this);
+    
+    
     @Override
     public void runOpMode() {
-        //Mapping hardware devices
-        RFMotor = hardwareMap.get(DcMotor.class, "motorRF");
-        RBMotor = hardwareMap.get(DcMotor.class, "motorRB");
-        LFMotor = hardwareMap.get(DcMotor.class, "motorLF");
-        LBMotor = hardwareMap.get(DcMotor.class, "motorLB");
-    
+        double drive        = 0;
+        double turn         = 0;
         
-        telemetry.addData("Status", "Running");
-        telemetry.update();
-       
+        // initialize all the hardware, using the hardware class. See how clean and simple this is?
+        robot.init();
         
+        // Send telemetry message to signify robot waiting;
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         
+        // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !isStopRequested()) {
             
-            double RFtgtPower = 0;
-            double LFtgtPower = 0;
-            double RBtgtPower = 0;
-            double LBtgtPower = 0;
+            telemetry.addData("Status", "Ready to run...");
+            telemetry.update();
             
-            RFtgtPower = gamepad1.right_stick_y;
-            RBtgtPower = gamepad1.right_stick_y;
-            LFtgtPower = gamepad1.right_stick_y*-1;
-            LBtgtPower = gamepad1.right_stick_y*-1;
+            // Run wheels in POV mode (note: The joystick goes negative when pushed forward, so negate it)
+            // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
+            // This way it's also easy to just drive straight, or just turn.
+            drive = gamepad1.left_stick_y;
+            turn  = gamepad1.right_stick_x;
+
+            // Combine drive and turn for blended motion. Use RobotHardware class
+            robot.driveRobot(drive, turn);
             
-            /*
-            RFtgtPower = gamepad1.left_stick_x;
-            RBtgtPower = gamepad1.left_stick_x*-1;
-            LFtgtPower = gamepad1.left_stick_x;
-            LBtgtPower = gamepad1.left_stick_x*-1;
-            */
+            telemetry.addData("Drive", "Left Stick");
+            telemetry.addData("Turn", "Right Stick");
+            telemetry.addData("-", "-------");
+
+            telemetry.addData("Drive Power", "%.2f", drive);
+            telemetry.addData("Turn Power",  "%.2f", turn);
+            telemetry.update();
             
-            RFMotor.setPower(RFtgtPower);
-            RBMotor.setPower(RBtgtPower);
-            LFMotor.setPower(LFtgtPower);
-            LBMotor.setPower(LBtgtPower);
-            
-            telemetry.addData("RF Target Power", RFtgtPower);
-            telemetry.addData("RB Target Power", RBtgtPower);
-            telemetry.addData("LF Target Power", LFtgtPower);
-            telemetry.addData("LB Target Power", LBtgtPower);
-    
-       
-            
-            
-        /*
-        while (opModeIsActive()) {
-            double RBtgtPower = 0;
-            RBtgtPower = gamepad1.right_stick_y;
-            RBMotor.setPower(RBtgtPower);
-            telemetry.addData("BF Target Power", RBtgtPower);    
-        */    
-            
-        }   
+            // Pace this loop so hands move at a reasonable speed.
+            sleep(50);
+        }
     }
-        
 }
