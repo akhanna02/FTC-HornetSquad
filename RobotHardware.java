@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
@@ -20,6 +23,10 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 
 public class RobotHardware {
 
@@ -46,7 +53,14 @@ public class RobotHardware {
     
     //camera
     private Camera camera;
-    private static final boolean USE_WEBCAM = true; 
+    private static final boolean USE_WEBCAM = true;
+    
+    //color sensor
+    private NormalizedColorSensor leftColorSensor;
+    private NormalizedColorSensor rightColorSensor;
+    
+    //distance sensor
+    private DistanceSensor sensorDistance;
     
     //The variable to store our instance of the AprilTag processor.
     private AprilTagProcessor aprilTag;
@@ -56,6 +70,11 @@ public class RobotHardware {
 
     //The variable to store our instance of the vision portal.
     private VisionPortal myVisionPortal;
+    
+    /** The relativeLayout field is used to aid in providing interesting visual feedback
+       * in this sample application; you probably *don't* need this when you use a color sensor on your
+       * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
+    private View relativeLayout;
     
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware (LinearOpMode opmode) {
@@ -88,6 +107,23 @@ public class RobotHardware {
         rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
         leftHand.setPosition(MID_SERVO);
         rightHand.setPosition(MID_SERVO);
+        */
+        
+        // Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over
+        // ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while
+        // the values you get from ColorSensor are dependent on the specific sensor you're using.
+        /* when ready to use the left/right color sensor
+        leftColorSensor = myOpMode.hardwareMap.get(NormalizedColorSensor.class, "color_left");
+        rightColorSensor = myOpMode.hardwareMap.get(NormalizedColorSensor.class, "color_right");
+        */
+        
+        /* when ready to use distance sensor
+        // you can use this as a regular DistanceSensor.
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "distance_sensor");
+
+        // you can also cast this to a Rev2mDistanceSensor if you want to use added
+        // methods associated with the Rev2mDistanceSensor class.
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorDistance;
         */
         
         myOpMode.telemetry.addData("Status", "Hardware Initialized");

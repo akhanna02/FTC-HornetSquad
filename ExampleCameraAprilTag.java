@@ -51,7 +51,7 @@ import java.util.List;
  */
 @TeleOp(name = "Concept: Double Vision", group = "Concept")
 
-public class CamTest02 extends LinearOpMode {
+public class ExampleCameraAprilTag extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     /**
